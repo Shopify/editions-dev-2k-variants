@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "abb96c0c96497b38bf145fe99b7fa925"
+name = "editions-dev-2k-variants"
+handle = "editions-dev-2k-variants"
+application_url = "https://lawsuit-wish-coal-billing.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "quickstart-01b53dbf.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://lawsuit-wish-coal-billing.trycloudflare.com/auth/callback",
+  "https://lawsuit-wish-coal-billing.trycloudflare.com/auth/shopify/callback",
+  "https://lawsuit-wish-coal-billing.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-04"
+
+[pos]
+embedded = false
