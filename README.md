@@ -1,10 +1,8 @@
-# Shopify App Template - Remix
+# Demo app for talk on migrating an app to use product APIs with 2k variant support
 
-This is a template for building a [Shopify app](https://shopify.dev/docs/apps/getting-started) using the [Remix](https://remix.run) framework.
+This is mean to give realistic example of how to take advantage of Shopify's latest APIs to support 2000 variants.
 
-Rather than cloning this repo, you can use your preferred package manager and the Shopify CLI with [these steps](https://shopify.dev/docs/apps/getting-started/create).
-
-Visit the [`shopify.dev` documentation](https://shopify.dev/docs/api/shopify-app-remix) for more details on the Remix app package.
+Boilerplate readme context below.
 
 ## Quick start
 
