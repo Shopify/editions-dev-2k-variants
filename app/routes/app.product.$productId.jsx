@@ -8,6 +8,7 @@ import {
   Card,
   Button,
   BlockStack,
+  Layout,
   Box,
   List,
   Link,
@@ -22,7 +23,6 @@ export const action = async ({ request, params }) => {
   const { admin, session } = await authenticate.admin(request);
   const id = params.productId;
   const product = await admin.rest.resources.Product.find({ session, id });
-  product.body_html
   return json(product);
 };
 
@@ -42,22 +42,31 @@ export default function ProductDetails() {
   );
   return (
     <Page>
-      <TitleBar title={"Product" + product.title} />
+      <TitleBar title={product.title} />
 
-      <BlockStack>
-        <Text as="h2">
-          Product:
-          {JSON.stringify(product)}
-        </Text>
-
-        <TextField
-            value={bodyHtml}
-            onChange={handleChange}
-            multiline={4}
-        />
-        <button>
-          Save
-        </button>
+      <BlockStack gap="500">
+        <Layout>
+          <Layout.Section>
+            <Text as="h2">
+              Product:
+            </Text>
+            <Box>
+              <pre style={{ margin: 0 }}>
+                {JSON.stringify(product, null, 2)}
+              </pre>
+            </Box>
+          </Layout.Section>
+          <Layout.Section variant="oneThird">
+            <TextField
+                value={bodyHtml}
+                onChange={handleChange}
+                multiline={4}
+            />
+            <button>
+              Save
+            </button>
+          </Layout.Section>
+        </Layout>
       </BlockStack>
     </Page>
   );

@@ -3,16 +3,14 @@ import { json } from "@remix-run/node";
 import { useActionData, useNavigation, useLoaderData } from "@remix-run/react";
 
 import {
-  Page,
-  Layout,
-  Text,
-  Card,
-  Button,
   BlockStack,
-  Box,
-  List,
+  Page,
+  IndexTable,
+  LegacyCard,
   Link,
-  InlineStack,
+  Text,
+  Thumbnail,
+  useBreakpoints,
 } from "@shopify/polaris";
 
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
@@ -30,15 +28,81 @@ export default function Products() {
       <TitleBar title="Products" />
 
       <BlockStack>
-        <Text as="h2">
-          Products
-          { products.data.map((product) => (
-            <p>
-              <Link url={"/app/product/"+product.id}>{product.title}</Link>
-            </p>
-          ))}
-        </Text>
+          { LinkIndexTable(products.data, {
+            singular: 'product',
+            plural: 'products',
+          }) }
+
+          {/* <Text>
+            {
+              JSON.stringify(products.data)
+            }
+          </Text> */}
       </BlockStack>
     </Page>
   );
+}
+
+
+function LinkIndexTable(products, resourceName) {
+
+  const rowMarkup = products.map(
+    ({id, title, handle, variants, image}, index) => (
+      <IndexTable.Row
+        id={id}
+        key={id}
+        position={index}
+      >
+        <IndexTable.Cell>
+          {
+            image ? 
+            <Thumbnail
+              source={image.src}
+              alt={image.alt}
+            />
+            : null
+          }
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          <Link
+            dataPrimaryLink
+            url={productPageLink(id)}
+          >
+            <Text fontWeight="bold" as="span">
+              {title}
+            </Text>
+          </Link>
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          {handle}
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          {variants.length}
+        </IndexTable.Cell>
+      </IndexTable.Row>
+    ),
+  );
+
+  return (
+    <LegacyCard>
+      <IndexTable
+        condensed={useBreakpoints().smDown}
+        resourceName={resourceName}
+        itemCount={products.length}
+        selectable={false}
+        headings={[
+          {title: ''},
+          {title: 'Title'},
+          {title: 'Handle'},
+          {title: 'Variant count'},
+        ]}
+      >
+        {rowMarkup}
+      </IndexTable>
+    </LegacyCard>
+  );
+}
+
+function productPageLink(id) {
+  return "/app/product/"+id;
 }
