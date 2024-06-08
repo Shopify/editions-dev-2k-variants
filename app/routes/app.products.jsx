@@ -6,7 +6,7 @@ import {
   BlockStack,
   Page,
   IndexTable,
-  LegacyCard,
+  Card,
   Link,
   Text,
   Thumbnail,
@@ -24,21 +24,20 @@ export const loader = async ({ request }) => {
 export default function Products() {
   const products = useLoaderData();
   return (
-    <Page>
-      <TitleBar title="Products" />
+    <Page
+      backAction={{content: 'Overview', url: "/app"}}
+      title="Products"
+      >
+        { LinkIndexTable(products.data, {
+          singular: 'product',
+          plural: 'products',
+        }) }
 
-      <BlockStack>
-          { LinkIndexTable(products.data, {
-            singular: 'product',
-            plural: 'products',
-          }) }
-
-          {/* <Text>
-            {
-              JSON.stringify(products.data)
-            }
-          </Text> */}
-      </BlockStack>
+        {/* <Text>
+          {
+            JSON.stringify(products.data)
+          }
+        </Text> */}
     </Page>
   );
 }
@@ -68,7 +67,7 @@ function LinkIndexTable(products, resourceName) {
             dataPrimaryLink
             url={productPageLink(id)}
           >
-            <Text fontWeight="bold" as="span">
+            <Text variant="bodyMd" fontWeight="bold" as="span">
               {title}
             </Text>
           </Link>
@@ -84,7 +83,7 @@ function LinkIndexTable(products, resourceName) {
   );
 
   return (
-    <LegacyCard>
+    <Card>
       <IndexTable
         condensed={useBreakpoints().smDown}
         resourceName={resourceName}
@@ -99,7 +98,7 @@ function LinkIndexTable(products, resourceName) {
       >
         {rowMarkup}
       </IndexTable>
-    </LegacyCard>
+    </Card>
   );
 }
 
