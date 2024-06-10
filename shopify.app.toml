@@ -3,7 +3,7 @@
 client_id = "abb96c0c96497b38bf145fe99b7fa925"
 name = "editions-dev-2k-variants"
 handle = "editions-dev-2k-variants"
-application_url = "https://productivity-hunter-sudan-beaver.trycloudflare.com"
+application_url = "https://assist-polar-banners-bulk.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://productivity-hunter-sudan-beaver.trycloudflare.com/auth/callback",
-  "https://productivity-hunter-sudan-beaver.trycloudflare.com/auth/shopify/callback",
-  "https://productivity-hunter-sudan-beaver.trycloudflare.com/api/auth/callback"
+  "https://assist-polar-banners-bulk.trycloudflare.com/auth/callback",
+  "https://assist-polar-banners-bulk.trycloudflare.com/auth/shopify/callback",
+  "https://assist-polar-banners-bulk.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
