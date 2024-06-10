@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { json } from "@remix-run/node";
 import { ExitIcon } from "@shopify/polaris-icons";
 import { useActionData, useLoaderData, useSubmit  } from "@remix-run/react";
+import { DataType } from '@shopify/shopify-api';
 
 import {
   Page,
@@ -22,6 +23,7 @@ import {
 
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
+// import shopify from "../shopify.server";
 
 export const action = async ({ request, params }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -32,8 +34,8 @@ export const action = async ({ request, params }) => {
     ...Object.fromEntries(await request.formData())
   };
   console.log(JSON.stringify(data));
-  const product = await admin.rest.resources.Product.find({ session, id });
-  product.body_html = data.body_html;
+  const productRest = await admin.rest.resources.Product.find({ session, id });
+  productRest.body_html = data.body_html;
   // raises: 
   // TypeError: value.reduce is not a function
   //   at file:///Users/ericwalker/src/github.com/Shopify/apps/editions-dev-2k-variants/node_modules/@shopify/shopify-api/dist/esm/rest/base.mjs:195:40
@@ -55,12 +57,21 @@ export const action = async ({ request, params }) => {
   //   at async nodeHandler (/Users/ericwalker/src/github.com/Shopify/apps/editions-dev-2k-variants/node_modules/@remix-run/dev/dist/vite/plugin.js:841:27)
   //   at async /Users/ericwalker/src/github.com/Shopify/apps/editions-dev-2k-variants/node_modules/@remix-run/dev/dist/vite/plugin.js:844:15
   
-  // product.variants = data.variants;
-  await product.save({
+  product.variants = data.variants;
+  await productRest.save({
     update: true,
   });
+
+  // const client = new shopify.clients.Rest({session});
+  // const responseDate = await client.put({
+  //   path: `products/${id}`,
+  //   data: {"product":{"id":id,"body_html": data.body_html}},
+  //   type: DataType.JSON,
+  // });
+  // console.log(JSON.stringify(data));
   
-  const [metafields, variants] = await Promise.all([
+  const [product, metafields, variants] = await Promise.all([
+    admin.rest.resources.Product.find({session, id}),
     admin.rest.resources.Metafield.all({session, id}),
     admin.rest.resources.Variant.all({session, product_id}),
   ]);
