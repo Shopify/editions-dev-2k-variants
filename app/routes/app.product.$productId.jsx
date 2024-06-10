@@ -57,7 +57,7 @@ export const action = async ({ request, params }) => {
   //   at async nodeHandler (/Users/ericwalker/src/github.com/Shopify/apps/editions-dev-2k-variants/node_modules/@remix-run/dev/dist/vite/plugin.js:841:27)
   //   at async /Users/ericwalker/src/github.com/Shopify/apps/editions-dev-2k-variants/node_modules/@remix-run/dev/dist/vite/plugin.js:844:15
   
-  product.variants = data.variants;
+  productRest.variants = data.variants;
   await productRest.save({
     update: true,
   });
@@ -90,6 +90,8 @@ export const loader = async ({ request, params }) => {
     admin.rest.resources.Variant.all({session, product_id}),
   ]);
 
+  product.variants // option1, option2, option3, admin_graphql_api_id // some how a filtered view of product.variants
+
   return json({product, metafields, variants});
 };
 
@@ -119,9 +121,9 @@ export default function ProductDetails() {
   );
 
   const priceChange = useCallback(
-    (variantPrice, index) => {
-      const variants = formState.variants.data.map((variant, i) => {
-        if(i === index) {
+    (variantPrice, position) => {
+      const variants = formState.variants.data.map((variant, index) => {
+        if(postion === index) {
           variant.price = variantPrice;
         }
         return variant;
@@ -173,7 +175,7 @@ export default function ProductDetails() {
                 <Text> Variant below</Text>
 
                 {formState.variants.data.map((variant, index) => (
-                  <Card>
+                  <Card key={`variant-price-${variant.id}`}>
                     <Text>{variant.title} - {variant.id}</Text>
                     <Text>{variant.price}</Text>
                     <TextField
@@ -201,15 +203,6 @@ export default function ProductDetails() {
               <TextField
                   label="Product Description"
                   value={formState.product.body_html}
-                  // onChange={(body_html) => setFormState({ ...formState, body_html })}
-                  // font: { ...prevStyle.font, align: event.target.value }
-                  // onChange={(event) => { 
-                  //   setStyle(prevStyle => ({
-                  //       ...prevStyle,
-                  //       font: { ...prevStyle.font, align: event.target.value }
-                  //   }));
-                  //   console.log(style);
-                  // }}
                   onChange={(body_html) => setFormState({ ...formState, product: {...formState.product, body_html }})}
                   multiline={4}
                   autoComplete="off"
