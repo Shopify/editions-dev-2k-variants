@@ -3,7 +3,6 @@ import { json } from "@remix-run/node";
 import { useActionData, useNavigation, useLoaderData } from "@remix-run/react";
 
 import {
-  BlockStack,
   Page,
   IndexTable,
   Card,

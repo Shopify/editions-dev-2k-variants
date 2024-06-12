@@ -12,66 +12,36 @@ import {
   BlockStack,
   FormLayout,
   Layout,
-  Box,
-  List,
-  Link,
-  InlineStack,
   TextField,
-  Icon,
   PageActions,
 } from "@shopify/polaris";
 
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
-import shopify from "../shopify.server";
 
 export const action = async ({ request, params }) => {
   const { admin, session } = await authenticate.admin(request);
-  const id = params.productId;
-  const product_id = id;
-  console.log("Server save");
   const data = {
     ...Object.fromEntries(await request.formData()),
   };
 
-  const inputJson =  {"product":{"id":id,"body_html": data.body_html, variants: JSON.parse(data.variants)}};
-  console.log("CCCC - inputJson", inputJson)
   const responseData = await admin.rest.put({
-    path: `products/${id}`,
-    data:inputJson,
+    path: `products/${params.productId}`,
+    data: {"product":{"id": id, "body_html": data.body_html, variants: JSON.parse(data.variants)}},
   });
   const responseDataJson = await responseData.json();
-  console.log("bbbbbbbbb", responseDataJson.product.variants);
-  
-  const [product, variants] = await Promise.all([
-    admin.rest.resources.Product.find({session, id}),
-    admin.rest.resources.Variant.all({session, product_id}),
-  ]);
 
-  return json({product, variants});
+  return json({product: responseDataJson.product});
 };
 
 export const loader = async ({ request, params }) => {
   const { admin, session } = await authenticate.admin(request);
-  const id = params.productId;
-  const product_id = id;
-
-  console.log("Shopify", shopify);
-
   const responseData = await admin.rest.get({
-    path: `products/${id}`,
+    path: `products/${params.productId}`,
   });
   const data = await responseData.json();
-  console.log("aaaaaaaa", data.product.variants);
 
-  const [product, variants] = await Promise.all([
-    admin.rest.resources.Product.find({session, id}),
-    admin.rest.resources.Variant.all({session, product_id}),
-  ]);
-
-  product.variants // option1, option2, option3, admin_graphql_api_id // some how a filtered view of product.variants
-
-  return json({product, variants});
+  return json({product: data.product});
 };
 
 export default function ProductDetails() {
@@ -86,7 +56,7 @@ export default function ProductDetails() {
     console.log('save run');
     const data = {
       body_html: formState.product.body_html,
-      variants: JSON.stringify(formState.variants.data),
+      variants: JSON.stringify(formState.product.variants),
     };
 
     setCleanFormState({ ...formState });
@@ -100,13 +70,13 @@ export default function ProductDetails() {
 
   const priceChange = useCallback(
     (variantPrice, position) => {
-      const variants = formState.variants.data.map((variant, index) => {
+      const variants = formState.product.variants.map((variant, index) => {
         if(position === index) {
           variant.price = variantPrice;
         }
         return variant;
       });
-      return setFormState({ ...formState, variants: { data: variants}});
+      return setFormState({ ...formState, product: {...formState.product, variants: variants}});
     },
     [],
   );
@@ -127,27 +97,9 @@ export default function ProductDetails() {
               View in admin
             </Button>
               <FormLayout>
-                <TextField
-                  label="Product JSON"
-                  value={JSON.stringify(formModel.product, null, 2)}
-                  // onChange={handleChange}
-                  multiline={4}
-                  autoComplete="off"
-                />
-
-                <TextField
-                  label="Product Variants"
-                  value={JSON.stringify(formModel.variants.data, null, 2)}
-                  // onChange={handleChange}
-                  multiline={4}
-                  autoComplete="off"
-                />
-                <Text> Variant below</Text>
-
-                {formState.variants.data.map((variant, index) => (
-                  <Card key={`variant-price-${variant.id}`}>
-                    <Text>{variant.title} - {variant.id}</Text>
-                    <Text>{variant.price}</Text>
+                <Text> Update your variant prices:</Text>
+                {formState.product.variants.map((variant, index) => (
+                  <Card key={variant.id}>
                     <TextField
                         label={variant.title}
                         value={variant.price}
@@ -155,7 +107,6 @@ export default function ProductDetails() {
                         prefix="$"
                         autoComplete="off"
                       />
-                    <Text>{variant.barcode}</Text>
                   </Card>
                 ))}
 
