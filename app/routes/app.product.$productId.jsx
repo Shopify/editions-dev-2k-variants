@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { json } from "@remix-run/node";
 import { ExitIcon } from "@shopify/polaris-icons";
-import { useActionData, useLoaderData, useSubmit  } from "@remix-run/react";
+import { useActionData, useLoaderData, useSubmit, useNavigation } from "@remix-run/react";
 import { DataType } from '@shopify/shopify-api';
 
 import {
@@ -18,28 +18,25 @@ import {
 
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
+import { productFind, productUpdate } from "../models/product.server";
 
 export const action = async ({ request, params }) => {
-  const { admin, session } = await authenticate.admin(request);
+  const { admin } = await authenticate.admin(request);
   const data = {
     ...Object.fromEntries(await request.formData()),
   };
+  data.variants = JSON.parse(data.variants); // decode JSON
 
-  const responseData = await admin.rest.put({
-    path: `products/${params.productId}`,
-    data: {"product":{"id": id, "body_html": data.body_html, variants: JSON.parse(data.variants)}},
-  });
-  const responseDataJson = await responseData.json();
+  const responseDataJson = productUpdate(admin, params.productId, data);
 
   return json({product: responseDataJson.product});
 };
 
 export const loader = async ({ request, params }) => {
-  const { admin, session } = await authenticate.admin(request);
-  const responseData = await admin.rest.get({
-    path: `products/${params.productId}`,
-  });
-  const data = await responseData.json();
+  const { admin } = await authenticate.admin(request);
+  const id = params.productId;
+  
+  const data = await productFind(admin, id);
 
   return json({product: data.product});
 };
@@ -50,6 +47,11 @@ export default function ProductDetails() {
   const [formState, setFormState] = useState(formModel);
 
   const [cleanFormState, setCleanFormState] = useState(formModel);
+
+  const isDirty = JSON.stringify(formState) !== JSON.stringify(cleanFormState);
+
+  const nav = useNavigation();
+  const isSaving = nav.state === "submitting";
 
   const submit = useSubmit();
   function handleSave() {
@@ -117,6 +119,8 @@ export default function ProductDetails() {
             <PageActions
               primaryAction={{
                 content: "Save",
+                // loading: isSaving,
+                // disabled: !isDirty || isSaving,
                 onAction: handleSave,
               }}
             />

@@ -3,7 +3,7 @@
 client_id = "abb96c0c96497b38bf145fe99b7fa925"
 name = "editions-dev-2k-variants"
 handle = "editions-dev-2k-variants"
-application_url = "https://cruise-present-outreach-collector.trycloudflare.com"
+application_url = "https://warner-bodies-soonest-discharge.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://cruise-present-outreach-collector.trycloudflare.com/auth/callback",
-  "https://cruise-present-outreach-collector.trycloudflare.com/auth/shopify/callback",
-  "https://cruise-present-outreach-collector.trycloudflare.com/api/auth/callback"
+  "https://warner-bodies-soonest-discharge.trycloudflare.com/auth/callback",
+  "https://warner-bodies-soonest-discharge.trycloudflare.com/auth/shopify/callback",
+  "https://warner-bodies-soonest-discharge.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
