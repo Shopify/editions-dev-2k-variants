@@ -15,11 +15,12 @@ import {
 
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
+import { productsAll } from "../models/product.server";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
-  console.log("admin session", admin);
-  return json(await admin.rest.resources.Product.all({ session }));
+  console.log("admin session", session);
+  return json(await productsAll(admin, session));
 };
 
 export default function Products() {
@@ -33,12 +34,6 @@ export default function Products() {
           singular: 'product',
           plural: 'products',
         }) }
-
-        {/* <Text>
-          {
-            JSON.stringify(products.data)
-          }
-        </Text> */}
     </Page>
   );
 }
@@ -104,5 +99,5 @@ function LinkIndexTable(products, resourceName) {
 }
 
 function productPageLink(id) {
-  return "/app/product/"+id;
+  return `/app/product/${id}`;
 }
