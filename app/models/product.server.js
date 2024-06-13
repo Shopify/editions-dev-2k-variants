@@ -2,12 +2,13 @@ export async function productFind(admin, id) {
   const responseData = await admin.rest.get({
     path: `products/${id}`,
   });
-  const data = await responseData.json();
-  return data;
+  const { product } = await responseData.json();
+  return product;
 }
 
 export async function productsAll(admin, session) {
-  return admin.rest.resources.Product.all({ session });
+  const { data } = await admin.rest.resources.Product.all({ session });
+  return data;
 }
 
 export async function productUpdate(admin, id, data) {

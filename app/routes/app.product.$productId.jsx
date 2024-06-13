@@ -36,9 +36,8 @@ export const loader = async ({ request, params }) => {
   const { admin } = await authenticate.admin(request);
   const id = params.productId;
   
-  const data = await productFind(admin, id);
-
-  return json({product: data.product});
+  const product = await productFind(admin, id);
+  return json({product});
 };
 
 export default function ProductDetails() {

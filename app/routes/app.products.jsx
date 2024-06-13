@@ -18,18 +18,18 @@ import { productsAll } from "../models/product.server";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
-  console.log("admin session", session);
-  return json(await productsAll(admin, session));
+  const response = await productsAll(admin, session);
+  return json(response);
 };
 
 export default function Products() {
-  const products = useLoaderData();
+  const data = useLoaderData();
   return (
     <Page
       backAction={{content: 'Overview', url: "/app"}}
       title="Products"
       >
-        { LinkIndexTable(products.data, {
+        { LinkIndexTable(data, {
           singular: 'product',
           plural: 'products',
         }) }
