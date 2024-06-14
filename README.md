@@ -2,6 +2,8 @@
 
 This is mean to give realistic example of how to take advantage of Shopify's latest APIs to support 2000 variants.
 
+During the workshop, we'll walk through how to convert the REST API calls in this project to GraphQL. Afterwards, we'll publish a branch with the GraphQL changes, for reference.
+
 ## Quick start
 
 ### Prerequisites
